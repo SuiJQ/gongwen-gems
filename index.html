@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>gongwen-gems — 党政公文修辞触发器库</title>
-<meta name="description" content="OpenClaw 技能包：68 句党政公文修辞触发器，按修辞功能四类组织，强制三步转化填入真实信息，防空话。">
+<title>gongwen-gems — 党政公文修辞触发器库（AI 协议版）</title>
+<meta name="description" content="OpenClaw 技能包：68 句党政公文修辞触发器，按修辞功能四类组织，字段化协议、强制三步转化填入真实信息、演示数据隔离、防空话。">
 <style>
   :root {
     --bg: #0d1117; --panel: #161b22; --border: #30363d;
@@ -80,17 +80,17 @@
   <div class="badges">
     <span class="badge gold">OpenClaw Skill</span>
     <span class="badge blue">68 句</span>
-    <span class="badge blue">4 大修辞功能</span>
-    <span class="badge blue">v3.0.0</span>
+    <span class="badge blue">AI 协议版</span>
+    <span class="badge blue">v3.1.0</span>
   </div>
   <h1><span class="mono">gongwen-gems</span> 党政公文修辞触发器库</h1>
-  <p class="tagline">面向县处级机关及为上级代写场景。不是成品句库，是转化装置——借逻辑骨架，强制填入真实信息。</p>
+  <p class="tagline">面向县处级机关及为上级代写场景。不是成品句库，是转化装置——借逻辑骨架，强制填入真实信息。字段化协议，供 AI 解析执行。</p>
 </header>
 
 <div class="stats">
   <div class="stat"><div class="num">68</div><div class="lbl">入库句式</div></div>
   <div class="stat"><div class="num">4+1</div><div class="lbl">修辞功能类</div></div>
-  <div class="stat"><div class="num">4</div><div class="lbl">完整范例</div></div>
+  <div class="stat"><div class="num">6</div><div class="lbl">字段协议</div></div>
   <div class="stat"><div class="num">1:2</div><div class="lbl">虚实配重比</div></div>
 </div>
 
@@ -129,24 +129,41 @@
   <tr><td>E 固定表述</td><td>格式惯例，按规范直接使用</td><td>12</td><td>法定公文固定位置</td></tr>
 </table>
 
-<h2>三大使用定律</h2>
+<h2>三大使用定律（可判定版）</h2>
 <ul>
-  <li><strong>虚实配重比（1:2）</strong>：每引用一句，所在自然段内必须至少含 2 处具体事实（数据、案例、举措、时限）。</li>
-  <li><strong>语境降噪法</strong>：按文种硬核程度限调用类型——请示等仅调用措施型且降为平实陈述。</li>
+  <li><strong>虚实配重比（1:2，事实原子分级）</strong>：每引用一句，所在自然段内 ≥2 个事实原子，其中 ≥1 个硬事实（数字+量词 / 专名）。</li>
+  <li><strong>语境降噪法（文种参数表）</strong>：按文种硬核程度限调用类型与强度档——请示等仅调用措施型且降为平实陈述。</li>
   <li><strong>不可替代性检验</strong>：删掉该句后核心信息仍完整 → 自动删除，无需引用。</li>
 </ul>
 
+<h2>数据隔离（最高优先级）</h2>
+<ul>
+  <li>库与范例中一切数字、单位名、人名均为<strong>演示数据，禁止写入用户公文</strong>。</li>
+  <li>唯一合法数据来源：用户本轮输入中出现过的实词。</li>
+</ul>
+
+<h2>字段协议</h2>
+<pre>每条：序号. **句子** 〔类｜簇｜强度｜槽位｜适用｜转化〕 + ✅正例 / ❌反例
+- 类：A破题定调 / B问题剖析 / C措施执行 / C2成效印证 / D收束升华 / E固定表述
+- 簇：逻辑骨架相似组，同段限用 1 句
+- 强度：S0 零引用 / S1 逻辑借壳 / S2 骨架保留 / S3 直接复制（仅 E 类合法）
+- 槽位：句中 {#槽位} 待填实词清单</pre>
+
 <h2>三步转化法</h2>
-<pre>Step 1 提实料：从用户输入抓取 3–5 个核心实词（任务/指标/主体/时限/案例）
-Step 2 定向借壳：只借句子的逻辑骨架，不借具体词汇
+<pre>Step 1 提实料：从用户输入抓取 3–5 个核心实词（任务/指标/主体/时限/案例），无 ≥3 实词 → S0 零引用
+Step 2 定向借壳：位置→骨架类 + 文种参数表→强度档，只借逻辑骨架
 Step 3 重组血肉：全部替换为用户实词，不通则放弃引用</pre>
 
+<h2>输出审计</h2>
+<pre>引用句以极简标记尾注 〔#句号→实词1/实词2〕，用户确认后整段剥离；长文动笔前先出示实词清单。</pre>
+
 <h2>使用</h2>
-<pre>作为 OpenClaw 技能：读取 SKILL.md（三大定律 + 三步转化法），借逻辑骨架，填入用户真实信息。
-完整范例：examples/example1-summary.md、example2-speech.md、example3-report.md、example4-transformation.md。</pre>
+<pre>作为 OpenClaw 技能：读取 SKILL.md（字段协议 + 三大定律 + 三步转化法），借逻辑骨架，填入用户真实信息。
+完整范例：examples/example1-summary.md、example2-speech.md、example3-report.md、example4-transformation.md。
+校验脚本：tools/validate.js（commit 前必跑）。</pre>
 
 <footer>
-  <p>gongwen-gems v3.0.0 · 作者 SuiJQ · 许可证 CC BY-NC-SA 4.0 · 仓库 <a href="https://github.com/SuiJQ/gongwen-gems" style="color:var(--accent)">github.com/SuiJQ/gongwen-gems</a></p>
+  <p>gongwen-gems v3.1.0 · 作者 SuiJQ · 许可证 CC BY-NC-SA 4.0 · 仓库 <a href="https://github.com/SuiJQ/gongwen-gems" style="color:var(--accent)">github.com/SuiJQ/gongwen-gems</a></p>
 </footer>
 
 </div>
