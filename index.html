@@ -101,8 +101,8 @@
 </div>
 <p class="muted" style="font-size:13px">句库全文见 <code>references/gems.md</code>（唯一数据源）。</p>
 
-<h2>句库预览（随机轮换）</h2>
-<p class="muted" style="font-size:13px">每次刷新随机抽取 3 句展示；也可点击按钮手动换一批。</p>
+<h2>句库预览（实时拉取·随机轮换）</h2>
+<p class="muted" style="font-size:13px">从 <code>references/gems.md</code> 实时拉取全部 100 句，随机抽取 3 句展示；刷新或点击按钮可换一批。</p>
 <div class="rotator-wrap" id="rotator">
   <div class="gem-card" id="c1"><span class="s"></span><span class="t"></span></div>
   <div class="gem-card" id="c2"><span class="s"></span><span class="t"></span></div>
@@ -110,7 +110,12 @@
 </div>
 <div class="rotator-controls">
   <button class="btn" id="shuffleBtn" type="button">换一批</button>
+  <button class="btn ghost" id="reloadBtn" type="button" style="display:none">重新加载句库</button>
   <span class="muted" id="poolHint" style="font-size:13px"></span>
+</div>
+<div class="gem-card" id="errCard" style="display:none; border-color:var(--red)">
+  <span class="s">句库加载失败</span>
+  <span class="t" id="errMsg"></span>
 </div>
 
 <h2>使用场景分桶</h2>
@@ -145,64 +150,100 @@
 </div>
 
 <script>
-// 句库预览池（与 references/gems.md 同步维护；正式句库以 gems.md 为准）
-const GEMS = [
-  { s: "一分部署，九分落实。", t: "对策/结尾 · 句前须列出具体部署事项" },
-  { s: "开局关系全局，起步决定后程。", t: "开头 · 衔接具体部署" },
-  { s: "坐在办公室碰到的都是问题，深入基层看到的全是办法。", t: "问题分析/对策 · 衔接调研走访情况" },
-  { s: "以钉钉子精神抓落实，一锤接着一锤敲，一颗接着一颗钉。", t: "对策 · 衔接具体任务" },
-  { s: "建立台账、对账销号，件件有着落、事事有回音。", t: "对策 · 衔接具体整改事项" },
-  { s: "带着问题下去，带着答案回来。", t: "对策 · 前后各接具体问题与办法" },
-  { s: "当前，{领域}仍面临{具体矛盾}的突出短板，必须下决心破解。", t: "问题分析 · 两项必填" },
-  { s: "针对{具体任务}，逐项建立台账，明确{时间节点}和{责任主体}。", t: "对策 · 三项必填" },
-  { s: "通过{具体举措}，{核心指标}较{基期}提升了{具体百分比}。", t: "成效 · 四项必填，禁编造" },
-  { s: "我们将以{具体目标}为牵引，坚决啃下{具体硬骨头}。", t: "表态 · 两项必填" },
-  { s: "数字是最有力的说明：{指标}增长{百分比}，{成效}群众看得见、摸得着。", t: "成效 · 三项必填" },
-  { s: "严是爱、松是害，放任不管必成灾。", t: "问题分析 · 衔接具体管理对象" },
-  { s: "坚决防止走过场、搞形式、图虚名。", t: "对策 · 衔接具体工作环节" },
-  { s: "以案为鉴、以案促改、以案促治。", t: "对策 · 点明具体案件" },
-  { s: "挂图作战、倒排工期、对表推进。", t: "对策 · 衔接具体项目及节点" },
-  { s: "有成绩也有不足，有收获也有差距，有压力更有动力。", t: "过渡 · 各部分后接具体内容" },
-  { s: "深入才能具体，具体才能深入。", t: "过渡 · 衔接调研体会" },
-  { s: "作风建设永远在路上，永远没有休止符。", t: "结尾 · 作风建设主题收束" }
-];
+// 实时从 GitHub raw 拉取 gems.md，解析全部句子后随机抽取展示（不内嵌句库）
+const RAW_URL = 'https://raw.githubusercontent.com/SuiJQ/gongwen-gems/main/references/gems.md';
 
 const cards = [
   { el: document.getElementById('c1'), s: null, t: null },
   { el: document.getElementById('c2'), s: null, t: null },
   { el: document.getElementById('c3'), s: null, t: null }
 ];
-// 预先取 DOM 子元素引用
 cards.forEach(c => {
   c.s = c.el.querySelector('.s');
   c.t = c.el.querySelector('.t');
 });
 
-function pick(count) {
-  const pool = GEMS.slice();
-  // Fisher-Yates 洗牌
-  for (let i = pool.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
+const errCard = document.getElementById('errCard');
+const errMsg = document.getElementById('errMsg');
+const poolHint = document.getElementById('poolHint');
+const reloadBtn = document.getElementById('reloadBtn');
+
+// 解析 gems.md：每行 "序号. 句子 〔场景:…｜替换:…｜频次:…〕"
+function parseGems(text) {
+  const out = [];
+  const lines = text.split(/\r?\n/);
+  for (const line of lines) {
+    const m = line.match(/^(\d+)\.\s+(.+?)\s*(?:〔|$)/);
+    if (!m) continue;
+    const rest = line.slice(m[1].length + m[2].length + 2); // 序号+点+空格之后
+    const meta = rest.match(/场景:([^｜〕]*)/);
+    const tag = meta ? meta[1].trim() : '';
+    // 去掉 markdown 加粗标记，保证纯文本展示
+    out.push({ s: m[2].trim().replace(/\*\*/g, ''), t: tag });
   }
-  return pool.slice(0, count);
+  return out;
 }
 
-function render() {
-  const chosen = pick(3);
+function pick(pool, count) {
+  const arr = pool.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr.slice(0, count);
+}
+
+function showErr(msg) {
+  errCard.style.display = 'block';
+  errMsg.textContent = msg;
+  reloadBtn.style.display = 'inline-block';
+  poolHint.textContent = '';
+}
+
+function render(pool) {
+  const chosen = pick(pool, 3);
   cards.forEach((c, i) => {
     c.el.classList.remove('show');
     setTimeout(() => {
       c.s.textContent = chosen[i].s;
-      c.t.textContent = chosen[i].t;
+      c.t.textContent = chosen[i].t ? '场景：' + chosen[i].t : '';
       c.el.classList.add('show');
-    }, i === 0 ? 60 : 60 + i * 90);
+    }, 60 + i * 90);
   });
+  poolHint.textContent = '已实时拉取 ' + pool.length + ' 句（gems.md）';
 }
 
-document.getElementById('shuffleBtn').addEventListener('click', render);
-document.getElementById('poolHint').textContent = '预览池 ' + GEMS.length + ' 句（完整 100 句见 gems.md）';
-render();
+let cache = null;
+
+async function load() {
+  errCard.style.display = 'none';
+  reloadBtn.style.display = 'none';
+  poolHint.textContent = '正在拉取句库…';
+  try {
+    // 加时间戳参数避免 CDN 缓存旧版本
+    const res = await fetch(RAW_URL + '?t=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const text = await res.text();
+    const pool = parseGems(text);
+    if (pool.length === 0) throw new Error('句库解析结果为空');
+    cache = pool;
+    render(pool);
+  } catch (e) {
+    // 有缓存则降级用缓存，否则报错
+    if (cache && cache.length > 0) {
+      render(cache);
+      poolHint.textContent = '拉取失败，已用上次缓存（' + cache.length + ' 句）';
+    } else {
+      showErr('无法连接句库源（' + e.message + '）。请检查网络后点击「重新加载句库」。');
+    }
+  }
+}
+
+document.getElementById('shuffleBtn').addEventListener('click', () => {
+  if (cache && cache.length > 0) render(cache); else load();
+});
+reloadBtn.addEventListener('click', load);
+load();
 </script>
 </body>
 </html>
