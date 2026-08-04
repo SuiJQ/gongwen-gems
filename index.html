@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>gongwen-gems — 党政公文好句库</title>
-<meta name="description" content="OpenClaw 技能包：100 句严肃、庄重、有信息量的党政公文好句，按使用场景组织，面向县处级机关及为上级代写场景。">
+<title>gongwen-gems — 党政公文修辞触发器库</title>
+<meta name="description" content="OpenClaw 技能包：68 句党政公文修辞触发器，按修辞功能四类组织，强制三步转化填入真实信息，防空话。">
 <style>
   :root {
     --bg: #0d1117; --panel: #161b22; --border: #30363d;
@@ -79,19 +79,19 @@
 <header class="hero">
   <div class="badges">
     <span class="badge gold">OpenClaw Skill</span>
-    <span class="badge blue">100 句</span>
-    <span class="badge blue">8 大使用场景</span>
-    <span class="badge blue">v2.0.0</span>
+    <span class="badge blue">68 句</span>
+    <span class="badge blue">4 大修辞功能</span>
+    <span class="badge blue">v3.0.0</span>
   </div>
-  <h1><span class="mono">gongwen-gems</span> 党政公文好句库</h1>
-  <p class="tagline">面向县处级机关及为上级代写场景。强约束、可落地、防空话——每条句子强制填入真实信息。</p>
+  <h1><span class="mono">gongwen-gems</span> 党政公文修辞触发器库</h1>
+  <p class="tagline">面向县处级机关及为上级代写场景。不是成品句库，是转化装置——借逻辑骨架，强制填入真实信息。</p>
 </header>
 
 <div class="stats">
-  <div class="stat"><div class="num">100</div><div class="lbl">入库句式</div></div>
-  <div class="stat"><div class="num">8</div><div class="lbl">使用场景</div></div>
-  <div class="stat"><div class="num">3</div><div class="lbl">完整范例</div></div>
-  <div class="stat"><div class="num">2</div><div class="lbl">1500字内配额</div></div>
+  <div class="stat"><div class="num">68</div><div class="lbl">入库句式</div></div>
+  <div class="stat"><div class="num">4+1</div><div class="lbl">修辞功能类</div></div>
+  <div class="stat"><div class="num">4</div><div class="lbl">完整范例</div></div>
+  <div class="stat"><div class="num">1:2</div><div class="lbl">虚实配重比</div></div>
 </div>
 
 <div class="btn-row">
@@ -102,7 +102,7 @@
 <p class="muted" style="font-size:13px">句库全文见 <code>references/gems.md</code>（唯一数据源）。</p>
 
 <h2>句库预览（实时拉取·随机轮换）</h2>
-<p class="muted" style="font-size:13px">从 <code>references/gems.md</code> 实时拉取全部 100 句，随机抽取 3 句展示；刷新或点击按钮可换一批。</p>
+<p class="muted" style="font-size:13px">从 <code>references/gems.md</code> 实时拉取全部 68 句，随机抽取 3 句展示；刷新或点击按钮可换一批。</p>
 <div class="rotator-wrap" id="rotator">
   <div class="gem-card" id="c1"><span class="s"></span><span class="t"></span></div>
   <div class="gem-card" id="c2"><span class="s"></span><span class="t"></span></div>
@@ -118,33 +118,35 @@
   <span class="t" id="errMsg"></span>
 </div>
 
-<h2>使用场景分桶</h2>
+<h2>修辞功能分类</h2>
 <table>
-  <tr><th>场景</th><th>句数</th><th>典型位置</th></tr>
-  <tr><td>开头定调</td><td>7</td><td>篇首</td></tr>
-  <tr><td>问题分析</td><td>12</td><td>问题段</td></tr>
-  <tr><td>对策措施</td><td>35</td><td>对策段</td></tr>
-  <tr><td>成效展示</td><td>8</td><td>成绩段</td></tr>
-  <tr><td>表态承诺</td><td>15</td><td>表态段/结尾</td></tr>
-  <tr><td>过渡衔接</td><td>9</td><td>段间</td></tr>
-  <tr><td>结尾收束</td><td>2</td><td>篇尾</td></tr>
-  <tr><td>规范用语</td><td>12</td><td>法定公文固定位置</td></tr>
+  <tr><th>类</th><th>功能</th><th>句数</th><th>典型位置</th></tr>
+  <tr><td>A 破题定调</td><td>开篇点题、定基调</td><td>7</td><td>篇首</td></tr>
+  <tr><td>B 问题剖析</td><td>指出矛盾、点差距</td><td>10</td><td>问题段</td></tr>
+  <tr><td>C 措施执行</td><td>部署落实</td><td>24</td><td>对策段</td></tr>
+  <tr><td>C2 成效印证</td><td>措施的结果，须有真实数据</td><td>4</td><td>成效段</td></tr>
+  <tr><td>D 收束升华</td><td>结尾鼓劲、表态承诺</td><td>11</td><td>篇尾/表态段</td></tr>
+  <tr><td>E 固定表述</td><td>格式惯例，按规范直接使用</td><td>12</td><td>法定公文固定位置</td></tr>
 </table>
 
-<h2>使用规则（强约束）</h2>
+<h2>三大使用定律</h2>
 <ul>
-  <li><strong>禁止直接复制</strong>：必须替换 <code>{占位符}</code> 并改写至少 20% 用词。</li>
-  <li><strong>禁止连续使用</strong>：同一段落内不得出现 2 条及以上本库句子。</li>
-  <li><strong>禁止替代事实</strong>：用户未提供具体数据/案例时，不得使用本库句子。</li>
-  <li><strong>配额</strong>：≤1500 字用 ≤2 处；1500–3000 字用 ≤3 处；≥3000 字用 ≤4 处。</li>
+  <li><strong>虚实配重比（1:2）</strong>：每引用一句，所在自然段内必须至少含 2 处具体事实（数据、案例、举措、时限）。</li>
+  <li><strong>语境降噪法</strong>：按文种硬核程度限调用类型——请示等仅调用措施型且降为平实陈述。</li>
+  <li><strong>不可替代性检验</strong>：删掉该句后核心信息仍完整 → 自动删除，无需引用。</li>
 </ul>
 
+<h2>三步转化法</h2>
+<pre>Step 1 提实料：从用户输入抓取 3–5 个核心实词（任务/指标/主体/时限/案例）
+Step 2 定向借壳：只借句子的逻辑骨架，不借具体词汇
+Step 3 重组血肉：全部替换为用户实词，不通则放弃引用</pre>
+
 <h2>使用</h2>
-<pre>作为 OpenClaw 技能：读取 SKILL.md（强约束手册），按使用场景选句，填入用户真实信息。
-完整范例：examples/example1-summary.md、example2-speech.md、example3-report.md。</pre>
+<pre>作为 OpenClaw 技能：读取 SKILL.md（三大定律 + 三步转化法），借逻辑骨架，填入用户真实信息。
+完整范例：examples/example1-summary.md、example2-speech.md、example3-report.md、example4-transformation.md。</pre>
 
 <footer>
-  <p>gongwen-gems v2.0.0 · 作者 SuiJQ · 许可证 CC BY-NC-SA 4.0 · 仓库 <a href="https://github.com/SuiJQ/gongwen-gems" style="color:var(--accent)">github.com/SuiJQ/gongwen-gems</a></p>
+  <p>gongwen-gems v3.0.0 · 作者 SuiJQ · 许可证 CC BY-NC-SA 4.0 · 仓库 <a href="https://github.com/SuiJQ/gongwen-gems" style="color:var(--accent)">github.com/SuiJQ/gongwen-gems</a></p>
 </footer>
 
 </div>
@@ -168,7 +170,7 @@ const errMsg = document.getElementById('errMsg');
 const poolHint = document.getElementById('poolHint');
 const reloadBtn = document.getElementById('reloadBtn');
 
-// 解析 gems.md：每行 "序号. 句子 〔场景:…｜替换:…｜频次:…〕"
+// 解析 gems.md：每行 "序号. 句子 〔类:…｜适用:…｜转化:…〕"
 function parseGems(text) {
   const out = [];
   const lines = text.split(/\r?\n/);
@@ -176,7 +178,7 @@ function parseGems(text) {
     const m = line.match(/^(\d+)\.\s+(.+?)\s*(?:〔|$)/);
     if (!m) continue;
     const rest = line.slice(m[1].length + m[2].length + 2); // 序号+点+空格之后
-    const meta = rest.match(/场景:([^｜〕]*)/);
+    const meta = rest.match(/类:([^｜〕]*)/);
     const tag = meta ? meta[1].trim() : '';
     // 去掉 markdown 加粗标记，保证纯文本展示
     out.push({ s: m[2].trim().replace(/\*\*/g, ''), t: tag });
@@ -206,7 +208,7 @@ function render(pool) {
     c.el.classList.remove('show');
     setTimeout(() => {
       c.s.textContent = chosen[i].s;
-      c.t.textContent = chosen[i].t ? '场景：' + chosen[i].t : '';
+      c.t.textContent = chosen[i].t ? '类：' + chosen[i].t : '';
       c.el.classList.add('show');
     }, 60 + i * 90);
   });
