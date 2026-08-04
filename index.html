@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>gongwen-gems — 党政公文好句库</title>
-<meta name="description" content="OpenClaw 技能包：100 句严肃、庄重、有信息量的党政公文好句，按 22 种公文题材分桶，面向县处级机关及为上级代写场景。">
+<meta name="description" content="OpenClaw 技能包：100 句严肃、庄重、有信息量的党政公文好句，按使用场景组织，面向县处级机关及为上级代写场景。">
 <style>
   :root {
     --bg: #0d1117; --panel: #161b22; --border: #30363d;
@@ -48,19 +48,25 @@
     background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
     padding: 16px 18px; overflow-x: auto; font-size: 13.5px; line-height: 1.6;
   }
-  .gems { list-style: none; margin: 12px 0 0; }
-  .gems li {
-    background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
-    padding: 12px 16px; margin: 8px 0;
+  /* 轮换卡片 */
+  .rotator-wrap { position: relative; }
+  .gem-card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px 22px; margin: 14px 0; min-height: 92px;
+    opacity: 0; transform: translateY(6px);
+    transition: opacity .35s ease, transform .35s ease;
   }
-  .gems .s { display: block; font-size: 15.5px; }
-  .gems .t { color: var(--muted); font-size: 12.5px; margin-top: 4px; }
-  .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 20px 0 8px; }
+  .gem-card.show { opacity: 1; transform: translateY(0); }
+  .gem-card .s { display: block; font-size: 17px; line-height: 1.6; }
+  .gem-card .t { color: var(--muted); font-size: 13px; margin-top: 8px; }
+  .rotator-controls { display: flex; gap: 10px; align-items: center; margin-top: 4px; }
   .btn {
-    display: inline-block; padding: 10px 20px; border-radius: 8px;
-    background: var(--accent); color: #0d1117; font-weight: 600; text-decoration: none; font-size: 14px;
+    display: inline-block; padding: 8px 18px; border-radius: 8px;
+    background: var(--accent); color: #0d1117; font-weight: 600; text-decoration: none; font-size: 13.5px;
+    border: none; cursor: pointer;
   }
   .btn.ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 20px 0 8px; }
   table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px; }
   th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
   th { background: var(--panel); color: var(--muted); font-weight: 600; }
@@ -74,18 +80,18 @@
   <div class="badges">
     <span class="badge gold">OpenClaw Skill</span>
     <span class="badge blue">100 句</span>
-    <span class="badge blue">22 种公文题材</span>
-    <span class="badge blue">v1.0.0</span>
+    <span class="badge blue">8 大使用场景</span>
+    <span class="badge blue">v2.0.0</span>
   </div>
   <h1><span class="mono">gongwen-gems</span> 党政公文好句库</h1>
-  <p class="tagline">面向县处级机关及为上级代写场景。严肃、庄重、有信息量的公文好句，排比对仗四字格都收——被用滥了才叫套话。</p>
+  <p class="tagline">面向县处级机关及为上级代写场景。强约束、可落地、防空话——每条句子强制填入真实信息。</p>
 </header>
 
 <div class="stats">
-  <div class="stat"><div class="num">100</div><div class="lbl">入库好句</div></div>
-  <div class="stat"><div class="num">13</div><div class="lbl">题材分桶</div></div>
-  <div class="stat"><div class="num">22</div><div class="lbl">覆盖文种</div></div>
-  <div class="stat"><div class="num">1</div><div class="lbl">统一风格</div></div>
+  <div class="stat"><div class="num">100</div><div class="lbl">入库句式</div></div>
+  <div class="stat"><div class="num">8</div><div class="lbl">使用场景</div></div>
+  <div class="stat"><div class="num">3</div><div class="lbl">完整范例</div></div>
+  <div class="stat"><div class="num">2</div><div class="lbl">1500字内配额</div></div>
 </div>
 
 <div class="btn-row">
@@ -95,50 +101,108 @@
 </div>
 <p class="muted" style="font-size:13px">句库全文见 <code>references/gems.md</code>（唯一数据源）。</p>
 
-<h2>精选句预览</h2>
-<ul class="gems">
-  <li><span class="s">一分部署，九分落实。</span><span class="t">讲话稿 · 动员部署、抓落实</span></li>
-  <li><span class="s">大事难事看担当，逆境顺境看襟度。</span><span class="t">讲话稿 · 干部担当</span></li>
-  <li><span class="s">栉风沐雨砥砺行，春华秋实满庭芳。</span><span class="t">总结·工作报告 · 开篇定调</span></li>
-  <li><span class="s">既报喜又报忧，既讲成绩又讲差距。</span><span class="t">汇报材料 · 客观汇报</span></li>
-  <li><span class="s">用脚步丈量民情，用真心换取民心。</span><span class="t">经验交流·典型材料 · 群众工作</span></li>
-  <li><span class="s">带着问题下去，带着答案回来。</span><span class="t">调研报告 · 调研要求</span></li>
-  <li><span class="s">述的是工作，亮的是担当，考的是实绩。</span><span class="t">述职报告 · 述职定位</span></li>
-  <li><span class="s">亮点在一线，经验在基层，典型在身边。</span><span class="t">简报 · 选题导向</span></li>
-  <li><span class="s">挂图作战、倒排工期、对表推进。</span><span class="t">计划方案 · 进度管控</span></li>
-</ul>
+<h2>句库预览（随机轮换）</h2>
+<p class="muted" style="font-size:13px">每次刷新随机抽取 3 句展示；也可点击按钮手动换一批。</p>
+<div class="rotator-wrap" id="rotator">
+  <div class="gem-card" id="c1"><span class="s"></span><span class="t"></span></div>
+  <div class="gem-card" id="c2"><span class="s"></span><span class="t"></span></div>
+  <div class="gem-card" id="c3"><span class="s"></span><span class="t"></span></div>
+</div>
+<div class="rotator-controls">
+  <button class="btn" id="shuffleBtn" type="button">换一批</button>
+  <span class="muted" id="poolHint" style="font-size:13px"></span>
+</div>
 
-<h2>分桶结构</h2>
+<h2>使用场景分桶</h2>
 <table>
-  <tr><th>文种</th><th>句数</th><th>优先级</th></tr>
-  <tr><td>讲话稿</td><td>20</td><td>最高频</td></tr>
-  <tr><td>总结·工作报告</td><td>12</td><td>高</td></tr>
-  <tr><td>汇报材料</td><td>10</td><td>高</td></tr>
-  <tr><td>经验交流·典型材料</td><td>10</td><td>高</td></tr>
-  <tr><td>调研报告</td><td>8</td><td>高</td></tr>
-  <tr><td>请示·报告（上行）</td><td>6</td><td>中</td></tr>
-  <tr><td>述职报告 / 通知·通报·意见 / 简报 / 计划方案</td><td>各 5</td><td>中</td></tr>
-  <tr><td>会议纪要</td><td>4</td><td>中</td></tr>
-  <tr><td>决定·决议</td><td>5</td><td>低</td></tr>
-  <tr><td>低频文种通用（批复·函·公告·通告·公报·命令·议案）</td><td>5</td><td>低</td></tr>
+  <tr><th>场景</th><th>句数</th><th>典型位置</th></tr>
+  <tr><td>开头定调</td><td>7</td><td>篇首</td></tr>
+  <tr><td>问题分析</td><td>12</td><td>问题段</td></tr>
+  <tr><td>对策措施</td><td>35</td><td>对策段</td></tr>
+  <tr><td>成效展示</td><td>8</td><td>成绩段</td></tr>
+  <tr><td>表态承诺</td><td>15</td><td>表态段/结尾</td></tr>
+  <tr><td>过渡衔接</td><td>9</td><td>段间</td></tr>
+  <tr><td>结尾收束</td><td>2</td><td>篇尾</td></tr>
+  <tr><td>规范用语</td><td>12</td><td>法定公文固定位置</td></tr>
 </table>
 
-<h2>选句原则</h2>
+<h2>使用规则（强约束）</h2>
 <ul>
-  <li><strong>一句一意</strong>：每句只承担一个表达功能（定调、鼓劲、表态、收束……），不贪多。</li>
-  <li><strong>严肃优先</strong>：拿不准时选更庄重的表达。</li>
-  <li><strong>宁缺毋滥</strong>：一段材料用 1-2 句点睛即可，不硬塞。</li>
-  <li><strong>排除项</strong>：网络流行语、口语化过重、抒情散文化、无信息量的空排比一律不入。</li>
+  <li><strong>禁止直接复制</strong>：必须替换 <code>{占位符}</code> 并改写至少 20% 用词。</li>
+  <li><strong>禁止连续使用</strong>：同一段落内不得出现 2 条及以上本库句子。</li>
+  <li><strong>禁止替代事实</strong>：用户未提供具体数据/案例时，不得使用本库句子。</li>
+  <li><strong>配额</strong>：≤1500 字用 ≤2 处；1500–3000 字用 ≤3 处；≥3000 字用 ≤4 处。</li>
 </ul>
 
 <h2>使用</h2>
-<pre>作为 OpenClaw 技能：读取 SKILL.md，按 22 种文种定位分桶，在 references/gems.md 取句。
-作为参考库：直接翻阅 gems.md，按场景标签检索。</pre>
+<pre>作为 OpenClaw 技能：读取 SKILL.md（强约束手册），按使用场景选句，填入用户真实信息。
+完整范例：examples/example1-summary.md、example2-speech.md、example3-report.md。</pre>
 
 <footer>
-  <p>gongwen-gems v1.0.0 · 作者 SuiJQ · 许可证 CC BY-NC-SA 4.0 · 仓库 <a href="https://github.com/SuiJQ/gongwen-gems" style="color:var(--accent)">github.com/SuiJQ/gongwen-gems</a></p>
+  <p>gongwen-gems v2.0.0 · 作者 SuiJQ · 许可证 CC BY-NC-SA 4.0 · 仓库 <a href="https://github.com/SuiJQ/gongwen-gems" style="color:var(--accent)">github.com/SuiJQ/gongwen-gems</a></p>
 </footer>
 
 </div>
+
+<script>
+// 句库预览池（与 references/gems.md 同步维护；正式句库以 gems.md 为准）
+const GEMS = [
+  { s: "一分部署，九分落实。", t: "对策/结尾 · 句前须列出具体部署事项" },
+  { s: "开局关系全局，起步决定后程。", t: "开头 · 衔接具体部署" },
+  { s: "坐在办公室碰到的都是问题，深入基层看到的全是办法。", t: "问题分析/对策 · 衔接调研走访情况" },
+  { s: "以钉钉子精神抓落实，一锤接着一锤敲，一颗接着一颗钉。", t: "对策 · 衔接具体任务" },
+  { s: "建立台账、对账销号，件件有着落、事事有回音。", t: "对策 · 衔接具体整改事项" },
+  { s: "带着问题下去，带着答案回来。", t: "对策 · 前后各接具体问题与办法" },
+  { s: "当前，{领域}仍面临{具体矛盾}的突出短板，必须下决心破解。", t: "问题分析 · 两项必填" },
+  { s: "针对{具体任务}，逐项建立台账，明确{时间节点}和{责任主体}。", t: "对策 · 三项必填" },
+  { s: "通过{具体举措}，{核心指标}较{基期}提升了{具体百分比}。", t: "成效 · 四项必填，禁编造" },
+  { s: "我们将以{具体目标}为牵引，坚决啃下{具体硬骨头}。", t: "表态 · 两项必填" },
+  { s: "数字是最有力的说明：{指标}增长{百分比}，{成效}群众看得见、摸得着。", t: "成效 · 三项必填" },
+  { s: "严是爱、松是害，放任不管必成灾。", t: "问题分析 · 衔接具体管理对象" },
+  { s: "坚决防止走过场、搞形式、图虚名。", t: "对策 · 衔接具体工作环节" },
+  { s: "以案为鉴、以案促改、以案促治。", t: "对策 · 点明具体案件" },
+  { s: "挂图作战、倒排工期、对表推进。", t: "对策 · 衔接具体项目及节点" },
+  { s: "有成绩也有不足，有收获也有差距，有压力更有动力。", t: "过渡 · 各部分后接具体内容" },
+  { s: "深入才能具体，具体才能深入。", t: "过渡 · 衔接调研体会" },
+  { s: "作风建设永远在路上，永远没有休止符。", t: "结尾 · 作风建设主题收束" }
+];
+
+const cards = [
+  { el: document.getElementById('c1'), s: null, t: null },
+  { el: document.getElementById('c2'), s: null, t: null },
+  { el: document.getElementById('c3'), s: null, t: null }
+];
+// 预先取 DOM 子元素引用
+cards.forEach(c => {
+  c.s = c.el.querySelector('.s');
+  c.t = c.el.querySelector('.t');
+});
+
+function pick(count) {
+  const pool = GEMS.slice();
+  // Fisher-Yates 洗牌
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, count);
+}
+
+function render() {
+  const chosen = pick(3);
+  cards.forEach((c, i) => {
+    c.el.classList.remove('show');
+    setTimeout(() => {
+      c.s.textContent = chosen[i].s;
+      c.t.textContent = chosen[i].t;
+      c.el.classList.add('show');
+    }, i === 0 ? 60 : 60 + i * 90);
+  });
+}
+
+document.getElementById('shuffleBtn').addEventListener('click', render);
+document.getElementById('poolHint').textContent = '预览池 ' + GEMS.length + ' 句（完整 100 句见 gems.md）';
+render();
+</script>
 </body>
 </html>
