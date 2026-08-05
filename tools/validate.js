@@ -10,6 +10,7 @@
  *  5. 正反例配对（每条至少各 1 个 ✅/❌，E 类除外）
  *  6. 数据隔离声明存在
  *  7. 簇一致性（同簇句子跨类检查）
+ *  8. skill 副本与权威句库一致（skill/gongwen-gems/references/gems.md）
  *
  * 用法：node tools/validate.js [path/to/gems.md]
  * 退出码：0 = 通过；1 = 有错误
@@ -22,6 +23,16 @@ const text = fs.readFileSync(file, 'utf8');
 
 const errors = [];
 const warnings = [];
+
+// ── 8. skill 副本一致性 ──────────────────────────────────
+const skillCopy = path.join(__dirname, '..', 'skill', 'gongwen-gems', 'references', 'gems.md');
+if (fs.existsSync(skillCopy)) {
+  if (fs.readFileSync(skillCopy, 'utf8') !== text) {
+    errors.push('skill 副本与权威句库不一致：运行 node tools/sync-skill.js 同步');
+  }
+} else {
+  errors.push('缺少 skill 副本：skill/gongwen-gems/references/gems.md（运行 node tools/sync-skill.js）');
+}
 
 // ── 块级解析：条目行 + 其后的示例行（直到下一条目/章节标题） ──
 const lines = text.split(/\r?\n/);
