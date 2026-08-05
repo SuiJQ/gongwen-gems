@@ -4,7 +4,7 @@
  *
  * 检查项：
  *  1. 序号连续（1..N 无缺号、无重号）
- *  2. 字段协议完整（类｜簇｜强度｜槽位｜适用｜转化 六字段齐全）
+ *  2. 字段协议完整（类｜簇｜强度｜槽位｜适用 五字段齐全）
  *  3. 类/强度取值合法（A/B/C/C2/D/E；S0-S3，E 类强度恒 S3）
  *  4. 槽位语法统一（{#槽位} 成对出现，无残留旧式 {占位符}）
  *  5. 正反例配对（每条至少各 1 个 ✅/❌，E 类除外）
@@ -17,7 +17,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const file = process.argv[2] || path.join(__dirname, '..', 'references', 'gems.md');
+const file = process.argv[2] || path.join(__dirname, '..', 'gems.md');
 const text = fs.readFileSync(file, 'utf8');
 
 const errors = [];
@@ -79,20 +79,22 @@ const codeOf = (s) => {
 
 for (const e of entries) {
   const parts = e.meta.split('｜').map(p => p.trim());
-  if (parts.length < 6) {
-    errors.push(`#${e.num} 字段不足（期望 ≥6 个，实际 ${parts.length}）：${e.meta}`);
+  if (parts.length < 5) {
+    errors.push(`#${e.num} 字段不足（期望 ≥5 个，实际 ${parts.length}）：${e.meta}`);
     continue;
   }
   const cls = codeOf(stripLabel(parts[0]));
   const cluster = stripLabel(parts[1]);
   const strength = codeOf(stripLabel(parts[2]));
   const slot = stripLabel(parts[3]);
+  const apply = stripLabel(parts[4]);
 
   if (!VALID_CLASS.includes(cls)) errors.push(`#${e.num} 类非法：${cls}`);
   if (!VALID_STRENGTH.includes(strength)) errors.push(`#${e.num} 强度非法：${strength}`);
   if (cls === 'E' && strength !== 'S3') errors.push(`#${e.num} E类强度必须为S3，实际 ${strength}`);
   if (!cluster) errors.push(`#${e.num} 缺少簇字段`);
   if (!slot) errors.push(`#${e.num} 缺少槽位字段`);
+  if (!apply) errors.push(`#${e.num} 缺少适用字段`);
 
   // ── 4. 槽位语法 ────────────────────────────────────────
   const braces = e.sentence.match(/\{([^}]*)\}/g) || [];
@@ -140,4 +142,4 @@ if (errors.length) {
   errors.forEach(e => console.log('  - ' + e));
   process.exit(1);
 }
-console.log('\n✓ 校验通过：序号连续、六字段齐全、类/强度合法、槽位语法正确、正反例配对、数据隔离声明存在');
+console.log('\n✓ 校验通过：序号连续、五字段齐全、类/强度合法、槽位语法正确、正反例配对、数据隔离声明存在');
