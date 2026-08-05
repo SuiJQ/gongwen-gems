@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>gongwen-gems — 党政公文好词好句数据源</title>
-<meta name="description" content="71 句党政公文好词好句，纯数据源：句子 + 检索元数据（类/簇/强度/槽位/适用），不含使用策略，供工作流调用。">
+<meta name="description" content="71 句党政公文好词好句：纯数据源 gems.md + WorkBuddy 可导入技能包（薄协议 + 确定性取句器）。句子 + 检索元数据（类/簇/强度/槽位/适用），策略归调用方。">
 <style>
   :root {
     --bg: #0d1117; --panel: #161b22; --border: #30363d;
@@ -88,16 +88,16 @@
 
 <div class="stats">
   <div class="stat"><div class="num">71</div><div class="lbl">入库句子</div></div>
-  <div class="stat"><div class="num">4+1</div><div class="lbl">修辞功能类</div></div>
+  <div class="stat"><div class="num">6</div><div class="lbl">修辞功能类</div></div>
   <div class="stat"><div class="num">5</div><div class="lbl">检索元数据字段</div></div>
-  <div class="stat"><div class="num">1</div><div class="lbl">唯一 md 文件</div></div>
+  <div class="stat"><div class="num">1</div><div class="lbl">权威数据源</div></div>
 </div>
 
 <div class="btn-row">
   <a class="btn" href="https://github.com/SuiJQ/gongwen-gems/archive/refs/heads/main.zip">下载完整仓库</a>
   <a class="btn ghost" href="https://raw.githubusercontent.com/SuiJQ/gongwen-gems/main/gems.md">下载句库 gems.md</a>
 </div>
-<p class="muted" style="font-size:13px">句库全文见 <code>gems.md</code>（仓库唯一 md 文件，唯一数据源）。</p>
+<p class="muted" style="font-size:13px">句库全文见 <code>gems.md</code>（唯一权威数据源；<code>skill/gongwen-gems/references/gems.md</code> 副本由 <code>tools/sync-skill.js</code> 自动同步）。</p>
 
 <h2>句库预览（实时拉取·随机轮换）</h2>
 <p class="muted" style="font-size:13px">从 <code>gems.md</code> 实时拉取全部 71 句，随机抽取 3 句展示；多源回退加载（Pages 同域 → jsDelivr CDN → GitHub raw），国内可直接访问；刷新或点击按钮可换一批。</p>
@@ -143,8 +143,10 @@
 
 <h2>使用</h2>
 <pre>作为数据源：直接读取 gems.md，按 类/簇/文种/强度 检索过滤，取用句子与元数据。
-不含使用策略：何时用、怎么用、怎么验——由调用方工作流决定。
-校验脚本：tools/validate.js（commit 前必跑）。</pre>
+作为 WorkBuddy 技能包：导入 skill/gongwen-gems/ 目录——SKILL.md 为薄协议（仅安全不变量），
+scripts/pick.py 为确定性取句器（只输出库内真句），references/examples.md 为标注范例。
+策略归调用方：何时用、怎么用、怎么验——由工作流/专家团/用户决定。
+校验脚本：tools/validate.js（commit 前必跑）+ tools/sync-skill.js（同步句库副本）。</pre>
 
 <footer>
   <p>gongwen-gems v5.0 · 作者 SuiJQ · 许可证 CC BY-NC-SA 4.0 · 仓库 <a href="https://github.com/SuiJQ/gongwen-gems" style="color:var(--accent)">github.com/SuiJQ/gongwen-gems</a></p>

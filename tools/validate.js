@@ -5,7 +5,7 @@
  * 检查项：
  *  1. 序号连续（1..N 无缺号、无重号）
  *  2. 字段协议完整（类｜簇｜强度｜槽位｜适用 五字段齐全）
- *  3. 类/强度取值合法（A/B/C/C2/D/E；S0-S3，E 类强度恒 S3）
+ *  3. 类/强度取值合法（A/B/C/C2/D/E；S0-S3，E 类强度恒 S3，非 E 类不得 S3）
  *  4. 槽位语法统一（{#槽位} 成对出现，无残留旧式 {占位符}）
  *  5. 正反例配对（每条至少各 1 个 ✅/❌，E 类除外）
  *  6. 数据隔离声明存在
@@ -103,6 +103,7 @@ for (const e of entries) {
   if (!VALID_CLASS.includes(cls)) errors.push(`#${e.num} 类非法：${cls}`);
   if (!VALID_STRENGTH.includes(strength)) errors.push(`#${e.num} 强度非法：${strength}`);
   if (cls === 'E' && strength !== 'S3') errors.push(`#${e.num} E类强度必须为S3，实际 ${strength}`);
+  if (cls !== 'E' && strength === 'S3') errors.push(`#${e.num} 非E类不得使用S3（仅E类固定表述可S3），实际 ${strength}`);
   if (!cluster) errors.push(`#${e.num} 缺少簇字段`);
   if (!slot) errors.push(`#${e.num} 缺少槽位字段`);
   if (!apply) errors.push(`#${e.num} 缺少适用字段`);
