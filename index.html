@@ -81,7 +81,7 @@
     <span class="badge gold">OpenClaw Skill</span>
     <span class="badge blue">71 句</span>
     <span class="badge blue">AI 协议版</span>
-    <span class="badge blue">v3.1.1</span>
+    <span class="badge blue">v3.1.2</span>
   </div>
   <h1><span class="mono">gongwen-gems</span> 党政公文修辞触发器库</h1>
   <p class="tagline">面向县处级机关及为上级代写场景。不是成品句库，是转化装置——借逻辑骨架，强制填入真实信息。字段化协议，供 AI 解析执行。</p>
@@ -102,7 +102,7 @@
 <p class="muted" style="font-size:13px">句库全文见 <code>references/gems.md</code>（唯一数据源）。</p>
 
 <h2>句库预览（实时拉取·随机轮换）</h2>
-<p class="muted" style="font-size:13px">从 <code>references/gems.md</code> 实时拉取全部 71 句，随机抽取 3 句展示；刷新或点击按钮可换一批。</p>
+<p class="muted" style="font-size:13px">从 <code>references/gems.md</code> 实时拉取全部 71 句，随机抽取 3 句展示；多源回退加载（Pages 同域 → jsDelivr CDN → GitHub raw），国内可直接访问；刷新或点击按钮可换一批。</p>
 <div class="rotator-wrap" id="rotator">
   <div class="gem-card" id="c1"><span class="s"></span><span class="t"></span></div>
   <div class="gem-card" id="c2"><span class="s"></span><span class="t"></span></div>
@@ -163,14 +163,19 @@ Step 3 重组血肉：全部替换为用户实词，不通则放弃引用</pre>
 校验脚本：tools/validate.js（commit 前必跑）。</pre>
 
 <footer>
-  <p>gongwen-gems v3.1.1 · 作者 SuiJQ · 许可证 CC BY-NC-SA 4.0 · 仓库 <a href="https://github.com/SuiJQ/gongwen-gems" style="color:var(--accent)">github.com/SuiJQ/gongwen-gems</a></p>
+  <p>gongwen-gems v3.1.2 · 作者 SuiJQ · 许可证 CC BY-NC-SA 4.0 · 仓库 <a href="https://github.com/SuiJQ/gongwen-gems" style="color:var(--accent)">github.com/SuiJQ/gongwen-gems</a></p>
 </footer>
 
 </div>
 
 <script>
-// 实时从 GitHub raw 拉取 gems.md，解析全部句子后随机抽取展示（不内嵌句库）
-const RAW_URL = 'https://raw.githubusercontent.com/SuiJQ/gongwen-gems/main/references/gems.md';
+// 多源回退加载 gems.md，解析全部句子后随机抽取展示（不内嵌句库）
+// raw.githubusercontent.com 在国内常被墙/超时，故按 同域 Pages → jsDelivr CDN → raw 依次尝试
+const SOURCES = [
+  { name: 'Pages 同域', url: './references/gems.md' },
+  { name: 'jsDelivr CDN', url: 'https://cdn.jsdelivr.net/gh/SuiJQ/gongwen-gems@main/references/gems.md' },
+  { name: 'GitHub raw', url: 'https://raw.githubusercontent.com/SuiJQ/gongwen-gems/main/references/gems.md' }
+];
 
 const cards = [
   { el: document.getElementById('c1'), s: null, t: null },
@@ -219,7 +224,7 @@ function showErr(msg) {
   poolHint.textContent = '';
 }
 
-function render(pool) {
+function render(pool, srcName) {
   const chosen = pick(pool, 3);
   cards.forEach((c, i) => {
     c.el.classList.remove('show');
@@ -229,7 +234,7 @@ function render(pool) {
       c.el.classList.add('show');
     }, 60 + i * 90);
   });
-  poolHint.textContent = '已实时拉取 ' + pool.length + ' 句（gems.md）';
+  poolHint.textContent = '已加载 ' + pool.length + ' 句（来源：' + srcName + '）';
 }
 
 let cache = null;
@@ -238,23 +243,29 @@ async function load() {
   errCard.style.display = 'none';
   reloadBtn.style.display = 'none';
   poolHint.textContent = '正在拉取句库…';
-  try {
-    // 加时间戳参数避免 CDN 缓存旧版本
-    const res = await fetch(RAW_URL + '?t=' + Date.now(), { cache: 'no-store' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const text = await res.text();
-    const pool = parseGems(text);
-    if (pool.length === 0) throw new Error('句库解析结果为空');
-    cache = pool;
-    render(pool);
-  } catch (e) {
-    // 有缓存则降级用缓存，否则报错
-    if (cache && cache.length > 0) {
-      render(cache);
-      poolHint.textContent = '拉取失败，已用上次缓存（' + cache.length + ' 句）';
-    } else {
-      showErr('无法连接句库源（' + e.message + '）。请检查网络后点击「重新加载句库」。');
+  let lastErr = null;
+  for (const src of SOURCES) {
+    try {
+      // 同域与 raw 加时间戳防缓存旧版；jsDelivr 按提交自动清缓存，无需参数
+      const qs = src.name === 'jsDelivr CDN' ? '' : '?t=' + Date.now();
+      const res = await fetch(src.url + qs, { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const pool = parseGems(await res.text());
+      if (pool.length === 0) throw new Error('句库解析结果为空');
+      cache = pool;
+      render(pool, src.name);
+      return;
+    } catch (e) {
+      lastErr = e;
+      console.warn('句库源不可用：' + src.name + '（' + e.message + '）');
     }
+  }
+  // 全部源失败：有缓存则降级用缓存，否则报错
+  if (cache && cache.length > 0) {
+    render(cache, '上次缓存');
+    poolHint.textContent = '全部源拉取失败，已用上次缓存（' + cache.length + ' 句）';
+  } else {
+    showErr('无法连接句库源（' + lastErr.message + '）。请检查网络后点击「重新加载句库」。');
   }
 }
 
